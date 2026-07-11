@@ -1,0 +1,28 @@
+.input {
+  border: 1px solid rgb(203 213 225);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  background: white;
+  color: inherit;
+}
+.input:focus {
+  outline: 2px solid rgb(99 102 241);
+  outline-offset: 1px;
+}
+@media (prefers-color-scheme: dark) {
+  .input {
+    border-color: rgb(51 65 85);
+    background: rgb(15 23 42);
+  }
+}
+.row-card {
+  border: 1px solid rgb(226 232 240);
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+}
+@media (prefers-color-scheme: dark) {
+  .row-card {
+    border-color: rgb(51 65 85);
+  }
+}

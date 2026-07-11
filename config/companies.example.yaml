@@ -1,0 +1,37 @@
+# Company watchlist. Copy this file to companies.yaml and edit it.
+#
+# How to find a company's token:
+#   Greenhouse: visit the company's careers page. If it's hosted on Greenhouse,
+#   the URL usually looks like https://job-boards.greenhouse.io/<token> or the
+#   page calls boards-api.greenhouse.io/v1/boards/<token>/jobs (check devtools
+#   Network tab). Try it directly: https://boards-api.greenhouse.io/v1/boards/<token>/jobs
+#
+#   Lever: careers pages are usually https://jobs.lever.co/<token>. The API is
+#   https://api.lever.co/v0/postings/<token>?mode=json
+#
+# A 200 response with a JSON body (even an empty list, meaning no open roles
+# right now) means the token is correct. A 404 means it's wrong or the
+# company doesn't use that ATS.
+#
+# The entries below are verified working tokens as of this writing -- replace
+# them with the companies you actually want to track.
+
+greenhouse:
+  - name: "Stripe"
+    token: "stripe"
+  - name: "Airbnb"
+    token: "airbnb"
+
+lever:
+  - name: "Plaid"
+    token: "plaid"
+  - name: "Netflix"
+    token: "netflix"
+
+# Optional: only keep postings whose title contains one of these (case-insensitive).
+# Leave empty to keep everything and rely on Claude's fit scoring instead.
+title_keywords: []
+
+# Optional: only keep postings whose location contains one of these substrings.
+# Leave empty to keep everything.
+location_keywords: []

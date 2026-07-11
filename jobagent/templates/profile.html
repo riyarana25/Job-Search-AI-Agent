@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}Profile · JobAgent{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto pb-24">
+  <h1 class="text-2xl font-semibold tracking-tight mb-1">Profile</h1>
+  <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">
+    This is your one-time profile. Everything here is treated as ground truth — nothing gets invented later.
+  </p>
+
+  <div class="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 mb-6">
+    <h2 class="font-medium mb-2">Upload resume</h2>
+    <p class="text-sm text-slate-500 dark:text-slate-400 mb-3">
+      Upload a PDF or DOCX resume to auto-fill the form below with Claude. Review everything before saving — extraction can miss or misread details.
+    </p>
+    <div class="flex items-center gap-3">
+      <input type="file" id="resume-file" accept=".pdf,.docx" class="text-sm" />
+      <button onclick="uploadResume()" id="btn-upload"
+        class="px-4 py-2 rounded-lg bg-accent-600 text-white text-sm font-medium hover:bg-accent-700 transition">
+        Upload &amp; auto-fill
+      </button>
+    </div>
+    <div id="upload-status" class="text-sm mt-2"></div>
+  </div>
+
+  <form id="profile-form" class="space-y-6">
+    <section class="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5">
+      <h2 class="font-medium mb-3">Contact</h2>
+      <div class="grid grid-cols-2 gap-3">
+        <input data-field="contact.full_name" placeholder="Full name" value="{{ profile.contact.full_name if profile.contact else '' }}" class="input">
+        <input data-field="contact.email" placeholder="Email" value="{{ profile.contact.email if profile.contact else '' }}" class="input">
+        <input data-field="contact.phone" placeholder="Phone" value="{{ profile.contact.phone if profile.contact else '' }}" class="input">
+        <input data-field="contact.location" placeholder="Location (city, state/country)" value="{{ profile.contact.location if profile.contact else '' }}" class="input">
+        <input data-field="contact.linkedin_url" placeholder="LinkedIn URL" value="{{ profile.contact.linkedin_url if profile.contact else '' }}" class="input">
+        <input data-field="contact.github_url" placeholder="GitHub URL" value="{{ profile.contact.github_url if profile.contact else '' }}" class="input">
+        <input data-field="contact.portfolio_url" placeholder="Portfolio URL" value="{{ profile.contact.portfolio_url if profile.contact else '' }}" class="input col-span-2">
+      </div>
+    </section>
+
+    <section class="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5">
+      <h2 class="font-medium mb-3">Preferences</h2>
+      <div class="grid grid-cols-2 gap-3">
+        <input data-field="preferences.target_titles" placeholder="Target titles (comma-separated)"
+          value="{{ (profile.preferences.target_titles if profile.preferences else [])|join(', ') }}" class="input col-span-2">
+        <input data-field="preferences.target_locations" placeholder="Target locations (comma-separated)"
+          value="{{ (profile.preferences.target_locations if profile.preferences else [])|join(', ') }}" class="input col-span-2">
+        <input data-field="preferences.work_authorization" placeholder="Work authorization"
+          value="{{ profile.preferences.work_authorization if profile.preferences else '' }}" class="input">
+        <input data-field="preferences.min_experience_level" placeholder="Experience level (internship/new_grad/mid/senior)"
+          value="{{ profile.preferences.min_experience_level if profile.preferences else '' }}" class="input">
+        <label class="flex items-center gap-2 text-sm col-span-2">
+          <input type="checkbox" data-field="preferences.remote_only" {% if profile.preferences and profile.preferences.remote_only %}checked{% endif %}>
+          Remote only
+        </label>
+      </div>
+    </section>
+
+    <section class="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="font-medium">Education</h2>
+        <button type="button" onclick="addRow('education')" class="text-sm text-accent-600 hover:underline">+ Add education</button>
+      </div>
+      <div id="education-rows" class="space-y-3"></div>
+    </section>
+
+    <section class="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="font-medium">Experience</h2>
+        <button type="button" onclick="addRow('experience')" class="text-sm text-accent-600 hover:underline">+ Add experience</button>
+      </div>
+      <div id="experience-rows" class="space-y-3"></div>
+    </section>
+
+    <section class="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5">
+      <h2 class="font-medium mb-3">Skills</h2>
+      <div class="grid grid-cols-3 gap-3">
+        <input data-field="skills.languages" placeholder="Languages (comma-separated)"
+          value="{{ (profile.skills.languages if profile.skills else [])|join(', ') }}" class="input">
+        <input data-field="skills.frameworks" placeholder="Frameworks (comma-separated)"
+          value="{{ (profile.skills.frameworks if profile.skills else [])|join(', ') }}" class="input">
+        <input data-field="skills.tools" placeholder="Tools (comma-separated)"
+          value="{{ (profile.skills.tools if profile.skills else [])|join(', ') }}" class="input">
+      </div>
+    </section>
+  </form>
+
+  <div class="fixed bottom-0 left-60 right-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur border-t border-slate-200 dark:border-slate-800 px-8 py-4 flex items-center gap-3">
+    <button onclick="saveProfile()" class="px-5 py-2 rounded-lg bg-accent-600 text-white text-sm font-medium hover:bg-accent-700 transition">Save profile</button>
+    <span id="save-status" class="text-sm text-slate-500 dark:text-slate-400"></span>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const initialProfile = {{ profile|tojson }};
+  initProfileForm(initialProfile);
+</script>
+{% endblock %}

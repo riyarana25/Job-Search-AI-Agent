@@ -1,0 +1,56 @@
+# Your one-time profile. Copy this file to profile.yaml and fill it in.
+# profile.yaml is gitignored -- it's never committed, since it holds your PII.
+#
+# IMPORTANT: everything under `experience` and `education` is treated as
+# ground truth. Later stages (resume tailoring) are only allowed to select
+# and reword these bullets for relevance -- never invent new ones. Keep this
+# file honest; that's what keeps the generated materials honest.
+
+contact:
+  full_name: "Jane Doe"
+  email: "jane@example.com"
+  phone: "+1-555-000-1111"
+  location: "San Francisco, CA"        # city, state/country you'll list on applications
+  linkedin_url: "https://linkedin.com/in/janedoe"
+  github_url: "https://github.com/janedoe"
+  portfolio_url: ""                     # optional
+
+preferences:
+  target_titles:                        # used to filter job postings by title match
+    - "Software Engineer"
+    - "Backend Engineer"
+    - "Machine Learning Engineer"
+  target_locations:                     # city/region names, or "Remote"
+    - "Remote"
+    - "San Francisco, CA"
+  remote_only: false
+  work_authorization: "US Citizen"      # e.g. "US Citizen", "Requires H1B sponsorship", "EU work permit"
+  min_experience_level: "internship"    # internship | new_grad | mid | senior -- used for fit scoring
+
+education:
+  - institution: "Example University"
+    degree: "B.Tech"
+    field: "Computer Science"
+    start_date: "2023-08"
+    end_date: "2027-05"
+    gpa: "8.5/10"
+
+experience:
+  - company: "Example Corp"
+    title: "Software Engineering Intern"
+    location: "Remote"
+    start_date: "2025-06"
+    end_date: "2025-08"
+    bullets:
+      - "Built a REST API in Django serving 10k+ daily requests, reducing p95 latency by 30%."
+      - "Wrote integration tests that caught 5 regressions before they reached production."
+
+skills:
+  languages: ["Python", "TypeScript", "Go"]
+  frameworks: ["Django", "React", "FastAPI"]
+  tools: ["Docker", "PostgreSQL", "AWS", "Git"]
+
+links:
+  resume_summary: >
+    A short 2-3 sentence professional summary used as the default resume
+    summary line before per-job tailoring.

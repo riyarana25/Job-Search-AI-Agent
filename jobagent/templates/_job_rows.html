@@ -1,0 +1,33 @@
+{% if not jobs %}
+  <div class="text-center py-16 text-slate-400 border border-dashed border-slate-300 dark:border-slate-700 rounded-xl">
+    Nothing scored yet. Click "Check for new jobs" then "Score new jobs" above.
+  </div>
+{% endif %}
+{% for job in jobs %}
+  <div class="job-card rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5" data-job-id="{{ job.id }}">
+    <div class="flex items-start justify-between gap-4">
+      <div class="min-w-0">
+        <div class="flex items-center gap-2 flex-wrap">
+          <a href="{{ job.url }}" target="_blank" rel="noopener" class="font-medium hover:underline">{{ job.title }}</a>
+          <span class="text-xs px-2 py-0.5 rounded-full
+            {% if job.fit_score >= 75 %}bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400
+            {% elif job.fit_score >= 50 %}bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400
+            {% else %}bg-rose-100 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400{% endif %}">
+            fit {{ job.fit_score }}
+          </span>
+        </div>
+        <div class="text-sm text-slate-500 dark:text-slate-400 mt-0.5">{{ job.company }} &middot; {{ job.location }} &middot; {{ job.source }}</div>
+        <p class="text-sm text-slate-600 dark:text-slate-300 mt-2">{{ job.fit_reasoning }}</p>
+        {% if job.matched_skills %}
+        <div class="mt-2 flex flex-wrap gap-1">
+          {% for s in job.matched_skills %}<span class="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300">{{ s }}</span>{% endfor %}
+        </div>
+        {% endif %}
+      </div>
+      <div class="flex flex-col gap-2 shrink-0">
+        <button onclick="setJobStatus('{{ job.id }}', 'interested')" class="px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-medium hover:bg-emerald-700">Interested</button>
+        <button onclick="setJobStatus('{{ job.id }}', 'skipped')" class="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 text-xs font-medium hover:bg-slate-50 dark:hover:bg-slate-800">Skip</button>
+      </div>
+    </div>
+  </div>
+{% endfor %}

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Companies · JobAgent{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto pb-24">
+  <h1 class="text-2xl font-semibold tracking-tight mb-1">Companies</h1>
+  <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">
+    The watchlist "discover" polls. Find a company's token from its careers page URL
+    (Greenhouse: <code>boards-api.greenhouse.io/v1/boards/&lt;token&gt;/jobs</code>,
+    Lever: <code>api.lever.co/v0/postings/&lt;token&gt;</code>).
+  </p>
+
+  <section class="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 mb-6">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="font-medium">Greenhouse</h2>
+      <button type="button" onclick="addCompanyRow('greenhouse')" class="text-sm text-accent-600 hover:underline">+ Add</button>
+    </div>
+    <div id="greenhouse-rows" class="space-y-2"></div>
+  </section>
+
+  <section class="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 mb-6">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="font-medium">Lever</h2>
+      <button type="button" onclick="addCompanyRow('lever')" class="text-sm text-accent-600 hover:underline">+ Add</button>
+    </div>
+    <div id="lever-rows" class="space-y-2"></div>
+  </section>
+
+  <section class="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5">
+    <h2 class="font-medium mb-3">Filters (optional)</h2>
+    <div class="grid grid-cols-2 gap-3">
+      <input id="title-keywords" placeholder="Title keywords (comma-separated)"
+        value="{{ (companies.title_keywords or [])|join(', ') }}" class="input">
+      <input id="location-keywords" placeholder="Location keywords (comma-separated)"
+        value="{{ (companies.location_keywords or [])|join(', ') }}" class="input">
+    </div>
+  </section>
+
+  <div class="fixed bottom-0 left-60 right-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur border-t border-slate-200 dark:border-slate-800 px-8 py-4 flex items-center gap-3">
+    <button onclick="saveCompanies()" class="px-5 py-2 rounded-lg bg-accent-600 text-white text-sm font-medium hover:bg-accent-700 transition">Save companies</button>
+    <span id="save-status" class="text-sm text-slate-500 dark:text-slate-400"></span>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const initialCompanies = {{ companies|tojson }};
+  initCompaniesForm(initialCompanies);
+</script>
+{% endblock %}
