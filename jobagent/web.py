@@ -1,4 +1,5 @@
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 
 from fastapi import Body, FastAPI, File, Request, UploadFile
@@ -42,8 +43,13 @@ def dashboard(request: Request):
     with db.connect() as conn:
         jobs = [_row_to_dict(r) for r in db.jobs_by_status(conn, "scored", order_by_score=True)]
         counts = _status_counts(conn)
+
+        last_seen = db.get_meta(conn, "dashboard_last_seen")
+        new_count = db.count_scored_since(conn, last_seen) if last_seen else 0
+        db.set_meta(conn, "dashboard_last_seen", datetime.now(timezone.utc).isoformat())
+
     return templates.TemplateResponse(
-        request, "dashboard.html", {"jobs": jobs, "counts": counts}
+        request, "dashboard.html", {"jobs": jobs, "counts": counts, "new_count": new_count}
     )
 
 

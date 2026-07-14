@@ -1,28 +1,280 @@
+/* ---- neo-brutalist design system, F1 / motorsport skin ---- */
+:root {
+  --np-ink: #14151a;        /* borders + hard shadows */
+  --np-paper: #e7e8eb;      /* page background: paddock daylight grey */
+  --np-card: #ffffff;       /* card background */
+  --np-soft: rgba(20, 21, 26, 0.35);
+  --np-weave: rgba(20, 21, 26, 0.06);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --np-ink: #eef0f3;
+    --np-paper: #08090b;    /* carbon black */
+    --np-card: #17181d;     /* carbon-fibre panel */
+    --np-soft: rgba(238, 240, 243, 0.35);
+    --np-weave: rgba(238, 240, 243, 0.05);
+  }
+}
+
+/* carbon-fibre weave in dark mode, fine asphalt hatch in light mode */
+body {
+  background-color: var(--np-paper);
+  background-image:
+    repeating-linear-gradient(45deg, var(--np-weave) 0, var(--np-weave) 1px, transparent 1px, transparent 7px),
+    repeating-linear-gradient(-45deg, var(--np-weave) 0, var(--np-weave) 1px, transparent 1px, transparent 7px);
+}
+
+::selection {
+  background: #e10600;
+  color: #ffffff;
+}
+
+/* chunky card: thick border + hard offset shadow */
+.np-card {
+  background: var(--np-card);
+  border: 2px solid var(--np-ink);
+  border-radius: 1rem;
+  box-shadow: 4px 4px 0 0 var(--np-ink);
+}
+
+/* force a black border on saturated (red/amber/green) surfaces so they
+   stay crisp in dark mode too — must come after .np-card / .np-btn / .np-chip */
+.np-pop {
+  border-color: #14151a !important;
+}
+
+/* button that physically presses into its shadow */
+.np-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border: 2px solid var(--np-ink);
+  border-radius: 0.75rem;
+  box-shadow: 3px 3px 0 0 var(--np-ink);
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+.np-btn:hover:not(:disabled) {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0 0 var(--np-ink);
+}
+.np-btn:active:not(:disabled) {
+  transform: translate(3px, 3px);
+  box-shadow: 0 0 0 0 var(--np-ink);
+}
+.np-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* pill badge */
+.np-chip {
+  display: inline-flex;
+  align-items: center;
+  border: 1.5px solid var(--np-ink);
+  border-radius: 9999px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* racing-number plate: used for the job fit-score badge */
+.np-plate {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.6rem;
+  line-height: 1;
+  border: 2px solid var(--np-ink);
+  border-radius: 0.55rem;
+  font-weight: 900;
+  padding: 0.2rem 0.5rem;
+}
+.np-plate .np-plate-num {
+  font-size: 0.95rem;
+}
+.np-plate .np-plate-cap {
+  font-size: 0.55rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  opacity: 0.75;
+  margin-top: 0.1rem;
+}
+
+/* highlighter-pen effect for headings, now racing-red */
+.np-hl {
+  background: linear-gradient(transparent 58%, rgba(225, 6, 0, 0.28) 58%);
+  padding: 0 0.08em;
+}
+
+/* horizontal top tab bar */
+.np-tabbar {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+.np-tab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  border: 2px solid transparent;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
+}
+.np-tab:hover {
+  transform: translateY(-1px);
+}
+.np-tab::after {
+  content: "";
+  position: absolute;
+  left: 1rem;
+  right: 1rem;
+  bottom: 0.28rem;
+  height: 3px;
+  border-radius: 2px;
+  background: #e10600;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.22s ease;
+}
+.np-tab:hover::after {
+  transform: scaleX(1);
+}
+.np-tab-active {
+  background: #e10600;
+  color: #ffffff !important;
+  border-color: #14151a !important;
+  box-shadow: 3px 3px 0 0 var(--np-ink);
+}
+.np-tab-active:hover {
+  transform: none;
+}
+.np-tab-active::after {
+  content: none;
+}
+
+/* full-bleed chequered strip along the very top of the header */
+.np-flag-strip-full {
+  height: 8px;
+  width: 100%;
+  background-color: #fff;
+  background-image:
+    linear-gradient(45deg, #14151a 25%, transparent 25%),
+    linear-gradient(-45deg, #14151a 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #14151a 75%),
+    linear-gradient(-45deg, transparent 75%, #14151a 75%);
+  background-size: 8px 8px;
+  background-position: 0 0, 0 4px, 4px -4px, -4px 0px;
+  transform-origin: left;
+  animation: np-grow-x 0.6s cubic-bezier(0.21, 0.9, 0.32, 1) both;
+}
+
+/* ---- motion: entrance + micro-interactions ---- */
+@keyframes np-fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.np-enter {
+  animation: np-fade-up 0.4s cubic-bezier(0.21, 0.9, 0.32, 1) both;
+}
+
+@keyframes np-grow-x {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+/* one-shot shimmer sweep across highlighted headline words */
+.np-shimmer {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+}
+.np-shimmer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 40%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  animation: np-shimmer-sweep 1.3s ease-out 0.2s 1 both;
+  pointer-events: none;
+}
+@media (prefers-color-scheme: dark) {
+  .np-shimmer::after {
+    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.22), transparent);
+  }
+}
+@keyframes np-shimmer-sweep {
+  0% { transform: translateX(-160%) skewX(-12deg); opacity: 0; }
+  12% { opacity: 1; }
+  70% { opacity: 1; }
+  100% { transform: translateX(280%) skewX(-12deg); opacity: 0; }
+}
+
+/* progressive-enhancement: smooth cross-page transitions in browsers that
+   support the View Transitions API; a plain instant navigation everywhere else */
+@view-transition {
+  navigation: auto;
+}
+::view-transition-old(root) {
+  animation: 160ms cubic-bezier(0.4, 0, 1, 1) both np-vt-out;
+}
+::view-transition-new(root) {
+  animation: 220ms cubic-bezier(0, 0, 0.2, 1) both np-vt-in;
+}
+@keyframes np-vt-out {
+  to { opacity: 0; transform: translateY(-6px); }
+}
+@keyframes np-vt-in {
+  from { opacity: 0; transform: translateY(6px); }
+}
+
+/* form inputs */
 .input {
-  border: 1px solid rgb(203 213 225);
-  border-radius: 0.5rem;
+  border: 2px solid var(--np-soft);
+  border-radius: 0.75rem;
   padding: 0.5rem 0.75rem;
   font-size: 0.875rem;
-  background: white;
+  background: var(--np-card);
   color: inherit;
+  transition: border-color 0.1s ease, box-shadow 0.1s ease;
+}
+.input::placeholder {
+  color: var(--np-soft);
 }
 .input:focus {
-  outline: 2px solid rgb(99 102 241);
-  outline-offset: 1px;
+  outline: none;
+  border-color: #e10600;
+  box-shadow: 3px 3px 0 0 #e10600;
 }
-@media (prefers-color-scheme: dark) {
-  .input {
-    border-color: rgb(51 65 85);
-    background: rgb(15 23 42);
-  }
-}
+
+/* dynamic education / experience / company rows */
 .row-card {
-  border: 1px solid rgb(226 232 240);
-  border-radius: 0.75rem;
-  padding: 0.75rem;
+  border: 2px dashed var(--np-soft);
+  border-radius: 0.9rem;
+  padding: 0.85rem;
 }
-@media (prefers-color-scheme: dark) {
-  .row-card {
-    border-color: rgb(51 65 85);
-  }
+
+/* chequered flag strip — classic CSS checkerboard trick, same in both themes */
+.np-flag-strip {
+  height: 10px;
+  width: 100%;
+  border-radius: 3px;
+  background-color: #fff;
+  background-image:
+    linear-gradient(45deg, #14151a 25%, transparent 25%),
+    linear-gradient(-45deg, #14151a 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #14151a 75%),
+    linear-gradient(-45deg, transparent 75%, #14151a 75%);
+  background-size: 10px 10px;
+  background-position: 0 0, 0 5px, 5px -5px, -5px 0px;
+  border: 1.5px solid var(--np-ink);
 }

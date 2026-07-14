@@ -1,33 +1,33 @@
 {% extends "base.html" %}
-{% block title %}Companies · JobAgent{% endblock %}
+{% block title %}Companies · jobagent{% endblock %}
 
 {% block content %}
-<div class="max-w-3xl mx-auto pb-24">
-  <h1 class="text-2xl font-semibold tracking-tight mb-1">Companies</h1>
-  <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">
-    The watchlist "discover" polls. Find a company's token from its careers page URL
-    (Greenhouse: <code>boards-api.greenhouse.io/v1/boards/&lt;token&gt;/jobs</code>,
-    Lever: <code>api.lever.co/v0/postings/&lt;token&gt;</code>).
+<div class="max-w-3xl mx-auto pb-28">
+  <h1 class="text-3xl font-bold tracking-tight mb-1 np-enter"><span class="np-hl np-shimmer">Companies</span></h1>
+  <p class="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-8">
+    The watchlist "Check for new jobs" polls. Find a company's token from its careers page URL
+    (Greenhouse: <code class="px-1 py-0.5 rounded-md bg-zinc-200/70 dark:bg-zinc-800 text-[11px]">boards-api.greenhouse.io/v1/boards/&lt;token&gt;/jobs</code>,
+    Lever: <code class="px-1 py-0.5 rounded-md bg-zinc-200/70 dark:bg-zinc-800 text-[11px]">api.lever.co/v0/postings/&lt;token&gt;</code>).
   </p>
 
-  <section class="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 mb-6">
+  <section class="np-card bg-white dark:bg-zinc-900 p-5 mb-8">
     <div class="flex items-center justify-between mb-3">
-      <h2 class="font-medium">Greenhouse</h2>
-      <button type="button" onclick="addCompanyRow('greenhouse')" class="text-sm text-accent-600 hover:underline">+ Add</button>
+      <h2 class="font-bold">Greenhouse</h2>
+      <button type="button" onclick="addCompanyRow('greenhouse')" class="np-btn bg-white dark:bg-zinc-800 px-3 py-1 text-xs">+ Add</button>
     </div>
-    <div id="greenhouse-rows" class="space-y-2"></div>
+    <div id="greenhouse-rows" class="space-y-2.5"></div>
   </section>
 
-  <section class="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 mb-6">
+  <section class="np-card bg-white dark:bg-zinc-900 p-5 mb-8">
     <div class="flex items-center justify-between mb-3">
-      <h2 class="font-medium">Lever</h2>
-      <button type="button" onclick="addCompanyRow('lever')" class="text-sm text-accent-600 hover:underline">+ Add</button>
+      <h2 class="font-bold">Lever</h2>
+      <button type="button" onclick="addCompanyRow('lever')" class="np-btn bg-white dark:bg-zinc-800 px-3 py-1 text-xs">+ Add</button>
     </div>
-    <div id="lever-rows" class="space-y-2"></div>
+    <div id="lever-rows" class="space-y-2.5"></div>
   </section>
 
-  <section class="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5">
-    <h2 class="font-medium mb-3">Filters (optional)</h2>
+  <section class="np-card bg-white dark:bg-zinc-900 p-5">
+    <h2 class="font-bold mb-3">Filters <span class="text-xs font-medium text-zinc-400">(optional)</span></h2>
     <div class="grid grid-cols-2 gap-3">
       <input id="title-keywords" placeholder="Title keywords (comma-separated)"
         value="{{ (companies.title_keywords or [])|join(', ') }}" class="input">
@@ -36,9 +36,11 @@
     </div>
   </section>
 
-  <div class="fixed bottom-0 left-60 right-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur border-t border-slate-200 dark:border-slate-800 px-8 py-4 flex items-center gap-3">
-    <button onclick="saveCompanies()" class="px-5 py-2 rounded-lg bg-accent-600 text-white text-sm font-medium hover:bg-accent-700 transition">Save companies</button>
-    <span id="save-status" class="text-sm text-slate-500 dark:text-slate-400"></span>
+  <div class="fixed bottom-0 left-0 right-0 bg-[#e7e8eb]/90 dark:bg-[#08090b]/90 backdrop-blur border-t-2 border-zinc-900 dark:border-zinc-200 px-8 py-4">
+    <div class="max-w-3xl mx-auto flex items-center gap-4">
+      <button onclick="saveCompanies()" class="np-btn np-pop bg-[#e10600] text-white px-5 py-2 text-sm">Save watchlist</button>
+      <span id="save-status" class="text-sm font-medium text-zinc-500 dark:text-zinc-400"></span>
+    </div>
   </div>
 </div>
 {% endblock %}

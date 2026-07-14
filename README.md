@@ -5,10 +5,13 @@ they fit your profile, so you stop losing applications to "I was too busy to
 check today." You fill in your profile once; the agent does the daily
 scanning and tells you which postings are worth your time.
 
-**Current scope (v0.1):** discover postings from Greenhouse and Lever ->
-fit-score them with Claude -> review them in a terminal queue and mark
-`interested` / `skipped`. Resume/cover-letter tailoring, PDF generation, and
-automatic form-filling are designed but not built yet (see "Roadmap" below).
+**Current scope (v0.2):** discover postings from Greenhouse and Lever ->
+fit-score them with Claude -> review them either in a terminal queue or in a
+local web dashboard, and mark `interested` / `skipped`. The dashboard also
+handles profile setup (with resume upload that auto-fills the form via
+Claude) and the company watchlist, so you don't have to hand-edit YAML.
+Resume/cover-letter tailoring, PDF generation, and automatic form-filling are
+designed but not built yet (see "Roadmap" below).
 
 ## Setup
 
@@ -21,15 +24,39 @@ automatic form-filling are designed but not built yet (see "Roadmap" below).
 2. Copy `.env.example` to `.env` and add your own Anthropic API key
    (get one at https://console.anthropic.com/). Each person self-hosting this
    uses their own key -- there's no shared backend.
-3. Copy `config/profile.example.yaml` to `config/profile.yaml` and fill in
-   your real details. Everything under `experience`/`education` is treated as
-   ground truth for later resume tailoring -- keep it accurate.
-4. Copy `config/companies.example.yaml` to `config/companies.yaml` and list
-   the companies you want to track (see the comments in that file for how to
-   find a company's Greenhouse/Lever token). `profile.yaml` and
-   `companies.yaml` are gitignored since they hold your personal data.
+3. Fill in your profile and company watchlist -- either through the web
+   dashboard (recommended, see below) or by hand: copy
+   `config/profile.example.yaml` to `config/profile.yaml` and
+   `config/companies.example.yaml` to `config/companies.yaml` and edit them
+   directly. Everything under `experience`/`education` is treated as ground
+   truth for later resume tailoring -- keep it accurate. Both files are
+   gitignored since they hold your personal data.
 
-## Usage
+## Usage: web dashboard (recommended)
+
+```
+python -m jobagent serve
+```
+
+This starts a local server at `http://127.0.0.1:8000` and opens it in your
+browser (add `--no-browser` to skip that, or `--port` to use a different
+port). From there:
+
+- **Profile** -- fill in your details by hand, or upload a PDF/DOCX resume
+  and let Claude auto-fill the form for you. Always review the extracted
+  fields before hitting Save -- extraction can miss or misread details, and
+  nothing should be saved that isn't actually true.
+- **Companies** -- add the Greenhouse/Lever companies you want tracked.
+- **Dashboard** -- click "Check for new jobs" and "Score new jobs" to run
+  the pipeline with live progress, then mark each scored posting
+  Interested/Skip.
+
+This is a single local process for a single person -- nothing here is
+exposed beyond `127.0.0.1`. `playwright` is a dependency but its browser
+binary (`playwright install chromium`) is only needed for development/testing
+right now, not for running the dashboard day-to-day.
+
+## Usage: CLI (alternative)
 
 Run daily (or wire up to Windows Task Scheduler once you're comfortable with it):
 
@@ -40,7 +67,8 @@ python -m jobagent review     # walk through scored postings, mark interested/sk
 ```
 
 Re-running `discover` is safe -- postings are deduplicated by URL, so you
-only ever see a given posting once.
+only ever see a given posting once. The CLI and the dashboard share the same
+`data/jobs.db` and `config/*.yaml`, so you can mix and match.
 
 ## Multi-user / friends setup
 
@@ -72,8 +100,11 @@ Anthropic API (for scoring) and to the public Greenhouse/Lever job APIs.
 
 ## Roadmap (not built yet)
 
-- Resume + cover letter tailoring per job (Claude drafts, a second Claude
-  call reviews/critiques, rendered to PDF via Playwright).
+- Resume + cover letter *tailoring per job posting* (Claude drafts, a second
+  Claude call reviews/critiques, rendered to PDF via Playwright). Note this is
+  different from the resume upload on the Profile page, which only extracts
+  your existing resume into structured profile fields once -- it doesn't
+  generate anything yet.
 - Playwright-based form autofill for Greenhouse/Lever application forms,
   gated by a `dry_run` flag.
 - Additional sources: YC Work at a Startup, RemoteOK, WeWorkRemotely,

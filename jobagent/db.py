@@ -24,6 +24,10 @@ CREATE TABLE IF NOT EXISTS jobs (
     matched_skills TEXT,
     missing_skills TEXT
 );
+CREATE TABLE IF NOT EXISTS meta (
+    key TEXT PRIMARY KEY,
+    value TEXT NOT NULL
+);
 """
 
 
@@ -33,7 +37,7 @@ def connect():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     try:
-        conn.execute(SCHEMA)
+        conn.executescript(SCHEMA)
         yield conn
         conn.commit()
     finally:
@@ -96,3 +100,24 @@ def set_score(
 
 def set_status(conn: sqlite3.Connection, job_id: str, status: str) -> None:
     conn.execute("UPDATE jobs SET status = ? WHERE id = ?", (status, job_id))
+
+
+def get_meta(conn: sqlite3.Connection, key: str) -> str | None:
+    row = conn.execute("SELECT value FROM meta WHERE key = ?", (key,)).fetchone()
+    return row["value"] if row else None
+
+
+def set_meta(conn: sqlite3.Connection, key: str, value: str) -> None:
+    conn.execute(
+        "INSERT INTO meta (key, value) VALUES (?, ?) "
+        "ON CONFLICT(key) DO UPDATE SET value = excluded.value",
+        (key, value),
+    )
+
+
+def count_scored_since(conn: sqlite3.Connection, since: str) -> int:
+    row = conn.execute(
+        "SELECT COUNT(*) AS c FROM jobs WHERE status = 'scored' AND discovered_at > ?",
+        (since,),
+    ).fetchone()
+    return row["c"]

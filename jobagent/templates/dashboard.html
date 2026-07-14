@@ -1,47 +1,53 @@
 {% extends "base.html" %}
-{% block title %}Dashboard · JobAgent{% endblock %}
+{% block title %}Dashboard · jobagent{% endblock %}
 
 {% block content %}
 <div class="max-w-5xl mx-auto">
-  <div class="flex items-start justify-between mb-6">
+  <div class="flex items-start justify-between mb-8 gap-4 flex-wrap np-enter">
     <div>
-      <h1 class="text-2xl font-semibold tracking-tight">Dashboard</h1>
-      <p class="text-sm text-slate-500 dark:text-slate-400">Review scored postings and run the pipeline.</p>
+      <h1 class="text-3xl font-bold tracking-tight"><span class="np-hl np-shimmer">Dashboard</span></h1>
+      <p class="text-sm font-medium text-zinc-500 dark:text-zinc-400 mt-1">New postings, scored for fit by Claude.</p>
     </div>
-    <div class="flex gap-2">
+    <div class="flex gap-3">
       <button id="btn-discover" onclick="runTask('discover')"
-        class="px-4 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+        class="np-btn bg-white dark:bg-zinc-800 px-4 py-2 text-sm">
         Check for new jobs
       </button>
       <button id="btn-score" onclick="runTask('score')"
-        class="px-4 py-2 rounded-lg bg-accent-600 text-white text-sm font-medium hover:bg-accent-700 transition">
+        class="np-btn np-pop bg-[#e10600] text-white px-4 py-2 text-sm">
         Score new jobs
       </button>
     </div>
   </div>
 
-  <div id="status-banner" class="hidden mb-6 rounded-lg border px-4 py-3 text-sm"></div>
+  {% if new_count and new_count > 0 %}
+  <div class="np-card np-pop np-enter bg-[#e10600] text-white px-4 py-3 text-sm font-bold mb-6 flex items-center gap-2">
+    {{ new_count }} new postings scored since you last checked in
+  </div>
+  {% endif %}
 
-  <div class="grid grid-cols-4 gap-4 mb-8">
-    <div class="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4">
-      <div class="text-xs text-slate-500 dark:text-slate-400">New</div>
-      <div id="count-new" class="text-2xl font-semibold">{{ counts.new }}</div>
+  <div id="status-banner" class="hidden mb-6 np-card px-4 py-3 text-sm font-semibold"></div>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-5 mb-10">
+    <div class="np-card np-pop np-enter bg-zinc-200 dark:bg-zinc-700 text-zinc-900 dark:text-white p-4" style="animation-delay: 0ms">
+      <div class="text-[11px] font-bold uppercase tracking-widest">New</div>
+      <div id="count-new" class="text-3xl font-bold">{{ counts.new }}</div>
     </div>
-    <div class="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4">
-      <div class="text-xs text-slate-500 dark:text-slate-400">Scored</div>
-      <div id="count-scored" class="text-2xl font-semibold">{{ counts.scored }}</div>
+    <div class="np-card np-pop np-enter bg-amber-300 text-zinc-900 p-4" style="animation-delay: 50ms">
+      <div class="text-[11px] font-bold uppercase tracking-widest">Scored</div>
+      <div id="count-scored" class="text-3xl font-bold">{{ counts.scored }}</div>
     </div>
-    <div class="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4">
-      <div class="text-xs text-slate-500 dark:text-slate-400">Interested</div>
-      <div id="count-interested" class="text-2xl font-semibold text-emerald-600 dark:text-emerald-400">{{ counts.interested }}</div>
+    <div class="np-card np-pop np-enter bg-emerald-400 text-zinc-900 p-4" style="animation-delay: 100ms">
+      <div class="text-[11px] font-bold uppercase tracking-widest">Interested</div>
+      <div id="count-interested" class="text-3xl font-bold">{{ counts.interested }}</div>
     </div>
-    <div class="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4">
-      <div class="text-xs text-slate-500 dark:text-slate-400">Skipped</div>
-      <div id="count-skipped" class="text-2xl font-semibold text-slate-400">{{ counts.skipped }}</div>
+    <div class="np-card np-enter bg-white dark:bg-zinc-900 p-4" style="animation-delay: 150ms">
+      <div class="text-[11px] font-bold uppercase tracking-widest text-zinc-400">Skipped</div>
+      <div id="count-skipped" class="text-3xl font-bold text-zinc-400">{{ counts.skipped }}</div>
     </div>
   </div>
 
-  <div id="job-list" class="space-y-3">
+  <div id="job-list" class="space-y-5">
     {% include "_job_rows.html" %}
   </div>
 </div>

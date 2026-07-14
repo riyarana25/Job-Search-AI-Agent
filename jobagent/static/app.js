@@ -41,9 +41,9 @@ async function pollStatus() {
   const running = discover.status === "running" || score.status === "running";
 
   const lines = [];
-  if (discover.status === "running") lines.push("Discovering: " + discover.detail);
-  else if (discover.detail) lines.push("Discover: " + discover.detail);
-  if (discover.error) lines.push("Discover error: " + discover.error);
+  if (discover.status === "running") lines.push("Checking for new jobs: " + discover.detail);
+  else if (discover.detail) lines.push("Check: " + discover.detail);
+  if (discover.error) lines.push("Check error: " + discover.error);
 
   if (score.status === "running") lines.push("Scoring: " + score.detail);
   else if (score.detail) lines.push("Score: " + score.detail);
@@ -53,11 +53,11 @@ async function pollStatus() {
     banner.classList.remove("hidden");
     banner.textContent = lines.join(" — ");
     const tone = running
-      ? "border-accent-300 bg-accent-50 text-accent-700 dark:border-accent-700 dark:bg-accent-500/10 dark:text-accent-400"
+      ? "np-pop bg-amber-300 text-zinc-900 animate-pulse"
       : discover.error || score.error
-      ? "border-rose-300 bg-rose-50 text-rose-700 dark:border-rose-700 dark:bg-rose-500/10 dark:text-rose-400"
-      : "border-emerald-300 bg-emerald-50 text-emerald-700 dark:border-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400";
-    banner.className = "mb-6 rounded-lg border px-4 py-3 text-sm " + tone;
+      ? "np-pop bg-[#e10600] text-white"
+      : "np-pop bg-emerald-400 text-zinc-900";
+    banner.className = "mb-6 np-card px-4 py-3 text-sm font-semibold " + tone;
   } else {
     banner.classList.add("hidden");
   }
@@ -85,9 +85,9 @@ async function refreshJobs() {
 }
 
 function fitBadgeClass(score) {
-  if (score >= 75) return "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400";
-  if (score >= 50) return "bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400";
-  return "bg-rose-100 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400";
+  if (score >= 75) return "bg-emerald-400 text-zinc-900";
+  if (score >= 50) return "bg-amber-300 text-zinc-900";
+  return "bg-[#e10600] text-white";
 }
 
 function renderJobList(jobs) {
@@ -95,32 +95,32 @@ function renderJobList(jobs) {
   if (!list) return;
   if (!jobs.length) {
     list.innerHTML =
-      '<div class="text-center py-16 text-slate-400 border border-dashed border-slate-300 dark:border-slate-700 rounded-xl">Nothing scored yet. Click "Check for new jobs" then "Score new jobs" above.</div>';
+      '<div class="text-center py-16 rounded-2xl border-2 border-dashed border-zinc-300 dark:border-zinc-700 text-zinc-400 font-medium np-enter"><div class="np-flag-strip max-w-[220px] mx-auto mb-4"></div>Nothing scored yet. Click "Check for new jobs" then "Score new jobs" to get started.</div>';
     return;
   }
   list.innerHTML = jobs
     .map(
-      (job) => `
-    <div class="job-card rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5" data-job-id="${job.id}">
+      (job, i) => `
+    <div class="job-card np-card np-enter bg-white dark:bg-zinc-900 p-5" data-job-id="${job.id}" style="animation-delay: ${i * 40}ms">
       <div class="flex items-start justify-between gap-4">
         <div class="min-w-0">
           <div class="flex items-center gap-2 flex-wrap">
-            <a href="${escapeAttr(job.url)}" target="_blank" rel="noopener" class="font-medium hover:underline">${escapeHtml(job.title)}</a>
-            <span class="text-xs px-2 py-0.5 rounded-full ${fitBadgeClass(job.fit_score)}">fit ${job.fit_score}</span>
+            <a href="${escapeAttr(job.url)}" target="_blank" rel="noopener" class="font-bold hover:underline decoration-[#e10600] decoration-[3px] underline-offset-2">${escapeHtml(job.title)}</a>
+            <span class="np-plate np-pop ${fitBadgeClass(job.fit_score)}"><span class="np-plate-num">${job.fit_score}</span><span class="np-plate-cap">fit</span></span>
           </div>
-          <div class="text-sm text-slate-500 dark:text-slate-400 mt-0.5">${escapeHtml(job.company)} &middot; ${escapeHtml(job.location)} &middot; ${escapeHtml(job.source)}</div>
-          <p class="text-sm text-slate-600 dark:text-slate-300 mt-2">${escapeHtml(job.fit_reasoning)}</p>
+          <div class="text-sm font-medium text-zinc-500 dark:text-zinc-400 mt-0.5">${escapeHtml(job.company)} &middot; ${escapeHtml(job.location)} &middot; ${escapeHtml(job.source)}</div>
+          <p class="text-sm text-zinc-600 dark:text-zinc-300 mt-2">${escapeHtml(job.fit_reasoning)}</p>
           ${
             job.matched_skills && job.matched_skills.length
-              ? `<div class="mt-2 flex flex-wrap gap-1">${job.matched_skills
-                  .map((s) => `<span class="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300">${escapeHtml(s)}</span>`)
+              ? `<div class="mt-2.5 flex flex-wrap gap-1.5">${job.matched_skills
+                  .map((s) => `<span class="text-xs font-semibold px-2 py-0.5 rounded-full border border-zinc-300 dark:border-zinc-600 bg-zinc-50 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300">${escapeHtml(s)}</span>`)
                   .join("")}</div>`
               : ""
           }
         </div>
-        <div class="flex flex-col gap-2 shrink-0">
-          <button onclick="setJobStatus('${job.id}', 'interested')" class="px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-medium hover:bg-emerald-700">Interested</button>
-          <button onclick="setJobStatus('${job.id}', 'skipped')" class="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 text-xs font-medium hover:bg-slate-50 dark:hover:bg-slate-800">Skip</button>
+        <div class="flex flex-col gap-2.5 shrink-0">
+          <button onclick="setJobStatus('${job.id}', 'interested')" class="np-btn np-pop bg-emerald-400 text-zinc-900 px-3 py-1.5 text-xs">Interested</button>
+          <button onclick="setJobStatus('${job.id}', 'skipped')" class="np-btn bg-white dark:bg-zinc-800 px-3 py-1.5 text-xs">Skip</button>
         </div>
       </div>
     </div>
@@ -139,7 +139,7 @@ async function setJobStatus(jobId, status) {
 // ---------- profile form ----------
 function makeEducationRow(edu = {}) {
   const div = document.createElement("div");
-  div.className = "row-card grid grid-cols-6 gap-2";
+  div.className = "row-card np-enter grid grid-cols-6 gap-2";
   div.innerHTML = `
     <input class="input col-span-2" data-k="institution" placeholder="Institution" value="${escapeAttr(edu.institution)}">
     <input class="input col-span-2" data-k="degree" placeholder="Degree" value="${escapeAttr(edu.degree)}">
@@ -147,14 +147,14 @@ function makeEducationRow(edu = {}) {
     <input class="input" data-k="start_date" placeholder="Start (YYYY-MM)" value="${escapeAttr(edu.start_date)}">
     <input class="input" data-k="end_date" placeholder="End (YYYY-MM)" value="${escapeAttr(edu.end_date)}">
     <input class="input" data-k="gpa" placeholder="GPA" value="${escapeAttr(edu.gpa)}">
-    <button type="button" onclick="this.closest('.row-card').remove()" class="col-span-6 text-xs text-rose-500 text-left hover:underline">Remove</button>
+    <button type="button" onclick="this.closest('.row-card').remove()" class="col-span-6 text-xs font-bold text-rose-500 text-left hover:underline decoration-2">Remove</button>
   `;
   return div;
 }
 
 function makeExperienceRow(exp = {}) {
   const div = document.createElement("div");
-  div.className = "row-card space-y-2";
+  div.className = "row-card np-enter space-y-2";
   div.innerHTML = `
     <div class="grid grid-cols-5 gap-2">
       <input class="input col-span-2" data-k="company" placeholder="Company" value="${escapeAttr(exp.company)}">
@@ -164,7 +164,7 @@ function makeExperienceRow(exp = {}) {
       <input class="input" data-k="end_date" placeholder="End (YYYY-MM)" value="${escapeAttr(exp.end_date)}">
     </div>
     <textarea class="input w-full" data-k="bullets" rows="3" placeholder="One bullet per line">${(exp.bullets || []).join("\n")}</textarea>
-    <button type="button" onclick="this.closest('.row-card').remove()" class="text-xs text-rose-500 hover:underline">Remove</button>
+    <button type="button" onclick="this.closest('.row-card').remove()" class="text-xs font-bold text-rose-500 hover:underline decoration-2">Remove</button>
   `;
   return div;
 }
@@ -300,11 +300,11 @@ function applyExtractedProfile(extracted) {
 // ---------- companies form ----------
 function makeCompanyRow(kind, entry = {}) {
   const div = document.createElement("div");
-  div.className = "row-card grid grid-cols-5 gap-2";
+  div.className = "row-card np-enter grid grid-cols-5 gap-2";
   div.innerHTML = `
     <input class="input col-span-2" data-k="name" placeholder="Company name" value="${escapeAttr(entry.name)}">
     <input class="input col-span-2" data-k="token" placeholder="${kind} token" value="${escapeAttr(entry.token)}">
-    <button type="button" onclick="this.closest('.row-card').remove()" class="text-xs text-rose-500 hover:underline">Remove</button>
+    <button type="button" onclick="this.closest('.row-card').remove()" class="text-xs font-bold text-rose-500 hover:underline decoration-2">Remove</button>
   `;
   return div;
 }

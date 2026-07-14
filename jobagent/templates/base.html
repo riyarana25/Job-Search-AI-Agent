@@ -4,16 +4,22 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{% block title %}Job Search AI Agent{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       darkMode: 'media',
       theme: {
         extend: {
+          fontFamily: {
+            sans: ['"Space Grotesk"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          },
           colors: {
             accent: {
-              50: '#eef2ff', 100: '#e0e7ff', 400: '#818cf8',
-              500: '#6366f1', 600: '#4f46e5', 700: '#4338ca',
+              50: '#fef2f2', 100: '#fee2e2', 300: '#fca5a5',
+              400: '#f6413c', 500: '#e10600', 600: '#c20500', 700: '#970400',
             },
           },
         },
@@ -22,37 +28,38 @@
   </script>
   <link rel="stylesheet" href="/static/style.css" />
 </head>
-<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 min-h-screen">
-  <div class="flex min-h-screen">
-    <aside class="w-60 shrink-0 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col">
-      <div class="px-6 py-5 border-b border-slate-200 dark:border-slate-800">
-        <div class="text-lg font-semibold tracking-tight">JobAgent</div>
-        <div class="text-xs text-slate-500 dark:text-slate-400">self-hosted job search</div>
+<body class="text-zinc-900 dark:text-zinc-100 min-h-screen flex flex-col">
+  <header class="sticky top-0 z-20 bg-[#e7e8eb]/95 dark:bg-[#08090b]/95 backdrop-blur border-b-2 border-zinc-900 dark:border-zinc-200">
+    <div class="np-flag-strip-full"></div>
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between gap-6 flex-wrap">
+      <div class="flex items-center gap-2.5 np-enter">
+        <div class="text-xl font-bold tracking-tight">
+          job<span class="np-pop inline-block bg-[#e10600] text-white px-1.5 border-2 rounded-lg -rotate-2">agent</span>
+        </div>
+        <span class="hidden sm:inline text-xs font-medium text-zinc-500 dark:text-zinc-400">Self-hosted job search</span>
       </div>
-      <nav class="flex-1 px-3 py-4 space-y-1">
+      <nav class="np-tabbar np-enter" style="animation-delay: 60ms">
         {% set path = request.url.path %}
-        <a href="/" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium
-          {% if path == '/' %}bg-accent-50 text-accent-700 dark:bg-accent-500/10 dark:text-accent-400{% else %}text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800{% endif %}">
-          <span>📋</span> Dashboard
+        <a href="/" class="np-tab {% if path == '/' %}np-tab-active{% else %}text-zinc-600 dark:text-zinc-300{% endif %}">
+          🏁 Dashboard
         </a>
-        <a href="/profile" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium
-          {% if path == '/profile' %}bg-accent-50 text-accent-700 dark:bg-accent-500/10 dark:text-accent-400{% else %}text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800{% endif %}">
-          <span>🧑</span> Profile
+        <a href="/profile" class="np-tab {% if path == '/profile' %}np-tab-active{% else %}text-zinc-600 dark:text-zinc-300{% endif %}">
+          🪖 Profile
         </a>
-        <a href="/companies" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium
-          {% if path == '/companies' %}bg-accent-50 text-accent-700 dark:bg-accent-500/10 dark:text-accent-400{% else %}text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800{% endif %}">
-          <span>🏢</span> Companies
+        <a href="/companies" class="np-tab {% if path == '/companies' %}np-tab-active{% else %}text-zinc-600 dark:text-zinc-300{% endif %}">
+          🏢 Companies
         </a>
       </nav>
-      <div class="px-6 py-4 border-t border-slate-200 dark:border-slate-800 text-xs text-slate-400">
-        v0.2 &middot; local only
-      </div>
-    </aside>
+    </div>
+  </header>
 
-    <main class="flex-1 min-w-0 p-8">
-      {% block content %}{% endblock %}
-    </main>
-  </div>
+  <main class="flex-1 min-w-0 px-8 py-8">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="text-center text-xs font-medium text-zinc-400 py-6">
+    v0.2 · local only
+  </footer>
 
   <script src="/static/app.js"></script>
   {% block scripts %}{% endblock %}
